@@ -5,16 +5,18 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Button } from './ui/button';
 import Image from 'next/image';
 import Link from 'next/link';
-import { modal } from '@/contexts/AppKitContext';
-import { useAccount, useDisconnect } from 'wagmi';
+// @ts-ignore - modal is created in AppKitContext and may be untyped
+// dynamically import modal at call time to avoid SSR/typing issues
 import { ChevronDown } from 'lucide-react';
+import { useAppKit } from '@/hooks/useAppKit'
+import { useDisconnect } from 'wagmi'
 
 
-const modal: any = {}; 
+
 
 const Navbar = () => {
-  const { address, isConnected } = useAccount();
-  const { disconnect } = useDisconnect();
+  const { address, isConnected, openModal } = useAppKit()
+  const { disconnect } = useDisconnect()
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   
@@ -26,7 +28,7 @@ const Navbar = () => {
   
   // Handle wallet connection
   const handleConnectWallet = () => {
-    modal.open();
+    openModal()
   };
   
   // Handle wallet disconnection

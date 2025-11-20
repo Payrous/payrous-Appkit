@@ -1,8 +1,6 @@
 'use client';
 
 import { ReactNode } from 'react';
-import { config } from '@/config'; 
-import { WagmiProvider } from 'wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 interface WagmiComponentWrapperProps {
@@ -12,12 +10,12 @@ interface WagmiComponentWrapperProps {
 // Create a client
 const queryClient = new QueryClient();
 
+// Wallet integration removed: this wrapper now only provides
+// a QueryClientProvider so existing consumers still get a query client.
 export default function WagmiComponentWrapper({ children }: WagmiComponentWrapperProps) {
   return (
-    <WagmiProvider config={config}>
-      <QueryClientProvider client={queryClient}>
-        {children}
-      </QueryClientProvider>
-    </WagmiProvider>
+    <QueryClientProvider client={queryClient}>
+      {children}
+    </QueryClientProvider>
   );
 }

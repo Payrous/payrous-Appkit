@@ -6,19 +6,17 @@ import { useRouter } from 'next/compat/router';
 import { FaTimes, FaBars } from 'react-icons/fa';
 import { Button } from './ui/button';
 import { payrous_logo } from '@/assets/icons';
-import { modal } from '@/contexts/AppKitContext';
-import { useAccount, useDisconnect } from 'wagmi';
 import { ChevronDown } from 'lucide-react';
-
-const modal: any = {}; 
+import { useAppKit } from '@/hooks/useAppKit'
+import { useDisconnect } from 'wagmi';
 
 const MobileNavbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const router = useRouter();
-  const { address, isConnected } = useAccount();
-  const { disconnect } = useDisconnect();
+  const { address, isConnected, openModal } = useAppKit()
+  const { disconnect } = useDisconnect()
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -38,7 +36,7 @@ const MobileNavbar = () => {
 
   // Handle wallet connection
   const handleConnectWallet = () => {
-    modal.open();
+    openModal()
     closeMenu();
   };
 

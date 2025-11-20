@@ -111,9 +111,9 @@ useEffect(() => {
             <div className="flex items-center gap-2 mt-2 mb-4 px-2">
               <Avatar className="h-10 w-10 border border-white/20">
               <Image src={userAvatar || avatar} alt="User" width={40} height={40} />
-                <AvatarFallback className="bg-colors-ButtonOrange text-white">
-                  {address.substring(2, 4).toUpperCase()}
-                </AvatarFallback>
+                  <AvatarFallback className="bg-colors-ButtonOrange text-white">
+                    {address ? (address as unknown as string).substring(2, 4).toUpperCase() : ''}
+                  </AvatarFallback>
               </Avatar>
               <div className="overflow-hidden">
                 <p className="text-sm font-medium truncate text-colors-Success">{formatWalletAddress(address)}</p>

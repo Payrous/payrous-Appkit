@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Mulish, Source_Sans_3 } from "next/font/google";
 import "./globals.css";
-import WagmiComponentWrapper from '@/components/WagmiComponentWrapper';
+import ContextProvider from '@/contexts/AppKitContext';
+import { headers } from 'next/headers'
 const inter = Mulish({ 
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -26,21 +27,24 @@ export const metadata: Metadata = {
 };
 
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const headersObj = await headers()
+  const cookies = headersObj.get('cookie')
+
   return (
     <html lang="en">
       <body className={`${inter.className} ${sourceSansPro.variable}`}>
-        <WagmiComponentWrapper>
+        <ContextProvider cookies={cookies}>
           <div className="bg-colors-Background min-h-screen">
             <div className="flex flex-col justify-center items-center">
               {children}
             </div>
           </div>
-        </WagmiComponentWrapper>
+        </ContextProvider>
       </body>
     </html>
   );

@@ -1,7 +1,6 @@
 'use client';
 
 import { useAccount, useBalance, useChainId, useSwitchChain } from 'wagmi';
-import { modal } from '@/contexts/AppKitContext'; 
 import { useEffect, useState } from 'react';
 
 export function useAppKit() {
@@ -22,6 +21,13 @@ export function useAppKit() {
     setMounted(true);
   }, []);
 
+  // Debug: log account state changes to help trace connection issues
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      console.debug('[useAppKit] address:', address, 'isConnected:', isConnected, 'chainId:', chainId)
+    }
+  }, [address, isConnected, chainId]);
+
   // Return placeholder values during SSR to prevent hydration mismatch
   if (!mounted) {
     return {
@@ -40,8 +46,9 @@ export function useAppKit() {
     isConnected,
     chainId,
     balance: balanceData,
-    openModal: () => modal.open(), 
-    closeModal: () => modal.close(),
+    // Use dynamic import to access the client-only `modal` safely at runtime.
+    openModal: () => import('@/contexts/AppKitContext').then((mod) => (mod.modal as any)?.open?.()),
+    closeModal: () => import('@/contexts/AppKitContext').then((mod) => (mod.modal as any)?.close?.()),
     switchChain,
   };
 }

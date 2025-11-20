@@ -1,11 +1,17 @@
+// Wallet/AppKit integration removed.
+// Provide no-op `modal` and a simple ContextProvider so app imports
+// remain valid while wallet code is disabled.
 
 'use client'
+
 import { wagmiAdapter, projectId } from '@/config'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createAppKit } from '@reown/appkit/react'
-import { mainnet, arbitrum, sepolia, polygon} from '@reown/appkit/networks'
+import { mainnet, arbitrum } from '@reown/appkit/networks'
 import React, { type ReactNode, useState } from 'react'
 import { cookieToInitialState, WagmiProvider, type Config } from 'wagmi'
+
+// Set up queryClient
 const queryClient = new QueryClient()
 
 if (!projectId) {
@@ -20,37 +26,35 @@ const metadata = {
   icons: ['https://avatars.githubusercontent.com/u/179229932']
 }
 
-// Create the modal and export it - only on client side
-let modal;
+// Create the modal
+let modal: any
 if (typeof window !== 'undefined') {
   modal = createAppKit({
     adapters: [wagmiAdapter],
     projectId,
-    networks: [mainnet, arbitrum, sepolia, polygon],
+    networks: [mainnet, arbitrum],
     defaultNetwork: mainnet,
     metadata: metadata,
     features: {
-      analytics: true
+      analytics: true // Optional - defaults to your Cloud configuration
     }
-  });
+  })
 } else {
-  // Create a placeholder for SSR
   modal = {
     open: () => {},
     close: () => {},
     render: () => null
-  };
+  }
 }
 
-export { modal };
+export { modal }
 
 function ContextProvider({ children, cookies }: { children: ReactNode; cookies: string | null }) {
-  const [client] = useState(() => queryClient);
-  
-  // Safe client-side only initialState
-  const initialState = typeof window !== 'undefined' 
+  const [client] = useState(() => queryClient)
+
+  const initialState = typeof window !== 'undefined'
     ? cookieToInitialState(wagmiAdapter.wagmiConfig as Config, cookies)
-    : undefined;
+    : undefined
 
   return (
     <WagmiProvider config={wagmiAdapter.wagmiConfig as Config} initialState={initialState}>

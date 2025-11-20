@@ -89,9 +89,9 @@ const Header: React.FC<HeaderProps> = ({
           <div className="flex items-center gap-2">
             <Avatar className="h-10 w-10 border border-gray-200">
             <Image src={avatar || "/placeholder.svg"} alt="User" />
-              <AvatarFallback className="bg-colors-ButtonOrange text-white">
-                {address.substring(2, 4).toUpperCase()}
-              </AvatarFallback>
+                <AvatarFallback className="bg-colors-ButtonOrange text-white">
+                  {address ? (address as unknown as string).substring(2, 4).toUpperCase() : ''}
+                </AvatarFallback>
             </Avatar>
             <p className="text-colors-Success text-sm">{formatWalletAddress(address)}</p>
           </div>
